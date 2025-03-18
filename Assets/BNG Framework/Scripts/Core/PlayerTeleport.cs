@@ -125,7 +125,7 @@ namespace BNG {
 
         [Header("Physics Material")]
         [Tooltip("Physics Material to apply to the sphere collider when no controls are being issued.")]
-        public PhysicMaterial FrictionMaterial;
+        public PhysicsMaterial FrictionMaterial;
 
         CharacterController controller;
         BNGPlayerController playerController;
@@ -608,7 +608,7 @@ namespace BNG {
 
             // Reset the player's velocity
             if (playerRigid) {
-                playerRigid.velocity = Vector3.zero;
+                playerRigid.linearVelocity = Vector3.zero;
             }
 
             // Update last teleport time

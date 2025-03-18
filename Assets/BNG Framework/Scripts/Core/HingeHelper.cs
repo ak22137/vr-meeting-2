@@ -95,7 +95,7 @@ namespace BNG {
         }
 
         public override void OnRelease() {
-            rigid.velocity = Vector3.zero;
+            rigid.linearVelocity = Vector3.zero;
             rigid.angularVelocity = Vector3.zero;
 
             base.OnRelease();

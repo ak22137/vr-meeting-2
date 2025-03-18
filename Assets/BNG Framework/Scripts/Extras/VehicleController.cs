@@ -148,7 +148,7 @@ namespace BNG {
         void FixedUpdate() {
 
             // Update speedometer
-            CurrentSpeed = correctValue(rb.velocity.magnitude * 3.6f);
+            CurrentSpeed = correctValue(rb.linearVelocity.magnitude * 3.6f);
 
             UpdateWheelTorque();
         }

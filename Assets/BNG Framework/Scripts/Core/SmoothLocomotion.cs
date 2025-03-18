@@ -35,10 +35,10 @@ namespace BNG {
         public float MaxSlopeAngle = 45f;
 
         [Tooltip("Physics Material to apply to the sphere collider while moving. Use this to dynamically adjust friction and bounciness.")]
-        public PhysicMaterial MovementMaterial;
+        public PhysicsMaterial MovementMaterial;
 
         [Tooltip("Physics Material to apply to the sphere collider when no controls are being issues. Use this to slow t he player down, or allow them to slide across surfaces.")]
-        public PhysicMaterial FrictionMaterial;
+        public PhysicsMaterial FrictionMaterial;
 
         [Tooltip("How much drag to apply to the player while moving")]
         public float MovementDrag = 1f;
@@ -230,7 +230,7 @@ namespace BNG {
 
             if(Time.time - lastJumpTime > 0.2f) {               
 
-                playerRigid.AddForce(new Vector3(playerRigid.velocity.x, JumpForce, playerRigid.velocity.z), ForceMode.VelocityChange);
+                playerRigid.AddForce(new Vector3(playerRigid.linearVelocity.x, JumpForce, playerRigid.linearVelocity.z), ForceMode.VelocityChange);
 
                 lastJumpTime = Time.time;
             }
@@ -331,7 +331,7 @@ namespace BNG {
                 Vector3 movement = Vector3.zero;
 
                 // Apply a force that attempts to reach our target velocity
-                Vector3 currentVelocity = playerRigid.velocity;
+                Vector3 currentVelocity = playerRigid.linearVelocity;
                 Vector3 velocityTarget = (targetVelocity - currentVelocity);
                 bool recentlyJumped = Time.time - lastJumpTime < 0.1f;
 
@@ -352,14 +352,14 @@ namespace BNG {
                                 playerSphere.material = MovementMaterial;
                             }
 
-                            playerRigid.drag = MovementDrag;
+                            playerRigid.linearDamping = MovementDrag;
                         }
                         else {
                             if (playerSphere) {
                                 playerSphere.material = FrictionMaterial;
                             }
 
-                            playerRigid.drag = StaticDrag;
+                            playerRigid.linearDamping = StaticDrag;
                         }
 
                         // Apply movement
@@ -371,7 +371,7 @@ namespace BNG {
                 // Air Control Movement
                 else {
 
-                    playerRigid.drag = AirDrag;
+                    playerRigid.linearDamping = AirDrag;
 
                     if (AirControl) {
 
@@ -385,19 +385,19 @@ namespace BNG {
                 }
 
                 //  Cap our min / max velocity. 
-                var adjustedVelocity = new Vector3(playerRigid.velocity.x, 0, playerRigid.velocity.z);
+                var adjustedVelocity = new Vector3(playerRigid.linearVelocity.x, 0, playerRigid.linearVelocity.z);
                 if(adjustedVelocity.magnitude > MaxHorizontalVelocity) {
                     adjustedVelocity = Vector3.ClampMagnitude(adjustedVelocity, MaxHorizontalVelocity);
 
-                    adjustedVelocity = new Vector3(adjustedVelocity.x, playerRigid.velocity.y, adjustedVelocity.z);
+                    adjustedVelocity = new Vector3(adjustedVelocity.x, playerRigid.linearVelocity.y, adjustedVelocity.z);
 
                     // Apply changes if there was a difference
-                    playerRigid.velocity = adjustedVelocity;
+                    playerRigid.linearVelocity = adjustedVelocity;
                 }
 
                 // Clamp the Y axis separately
-                if (Mathf.Abs(playerRigid.velocity.y) > MaxVerticalVelocity) {
-                    playerRigid.velocity = new Vector3(playerRigid.velocity.x, Mathf.Clamp(playerRigid.velocity.y, -MaxVerticalVelocity, MaxVerticalVelocity), playerRigid.velocity.z);
+                if (Mathf.Abs(playerRigid.linearVelocity.y) > MaxVerticalVelocity) {
+                    playerRigid.linearVelocity = new Vector3(playerRigid.linearVelocity.x, Mathf.Clamp(playerRigid.linearVelocity.y, -MaxVerticalVelocity, MaxVerticalVelocity), playerRigid.linearVelocity.z);
                 }
             }
         }
@@ -517,8 +517,8 @@ namespace BNG {
         public virtual void SetupRigidbodyPlayer() {
             playerRigid = gameObject.AddComponent<Rigidbody>();
             playerRigid.mass = 50f;
-            playerRigid.drag = 1f;
-            playerRigid.angularDrag = 0.05f;
+            playerRigid.linearDamping = 1f;
+            playerRigid.angularDamping = 0.05f;
             playerRigid.freezeRotation = true;
             // playerRigid.useGravity = false; // Gravity is applied manually
 

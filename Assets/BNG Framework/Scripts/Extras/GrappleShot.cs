@@ -300,7 +300,7 @@ namespace BNG {
                         }
                         else if (smoothLocomotion.ControllerType == PlayerControllerType.Rigidbody) {
                             if(GrappleForceMode == ForceMode.VelocityChange) {
-                                playerRigid.velocity = Vector3.MoveTowards(playerRigid.velocity, (moveDirection * GrappleForce) * Time.fixedDeltaTime, 1f);
+                                playerRigid.linearVelocity = Vector3.MoveTowards(playerRigid.linearVelocity, (moveDirection * GrappleForce) * Time.fixedDeltaTime, 1f);
                             }
                             else {
                                 playerRigid.AddForce(moveDirection * GrappleForce, GrappleForceMode);
@@ -317,7 +317,7 @@ namespace BNG {
 
                 if (isDynamic) {
                     //grappleTargetRigid.useGravity = true;
-                    grappleTargetRigid.velocity = Vector3.zero;
+                    grappleTargetRigid.linearVelocity = Vector3.zero;
                     grappleTargetRigid.isKinematic = true;
                     grappleTargetRigid.transform.parent = transform;
                 }

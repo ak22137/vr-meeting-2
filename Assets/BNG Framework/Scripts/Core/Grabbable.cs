@@ -744,7 +744,7 @@ namespace BNG {
                 moveRotation(grabTransform.rotation);
 
                 if (rigid) {
-                    rigid.velocity = Vector3.zero;
+                    rigid.linearVelocity = Vector3.zero;
                 }
 
                 if (flyingTo != null) {
@@ -785,7 +785,7 @@ namespace BNG {
                     moveRotation(grabTransform.rotation);
 
                     if (rigid) {
-                        rigid.velocity = Vector3.zero;
+                        rigid.linearVelocity = Vector3.zero;
                     }
 
                     if (flyingTo != null) {
@@ -797,7 +797,7 @@ namespace BNG {
                     Vector3 positionDelta = grabberPosition - transform.position;
 
                     // Move towards hand using velocity
-                    rigid.velocity = Vector3.MoveTowards(rigid.velocity, (positionDelta * MoveVelocityForce) * Time.fixedDeltaTime, 1f);
+                    rigid.linearVelocity = Vector3.MoveTowards(rigid.linearVelocity, (positionDelta * MoveVelocityForce) * Time.fixedDeltaTime, 1f);
 
                     rigid.MoveRotation(Quaternion.Slerp(rigid.rotation, GetGrabbersAveragedRotation(), Time.fixedDeltaTime * GrabSpeed));
                     //rigid.angularVelocity = Vector3.zero;
@@ -839,7 +839,7 @@ namespace BNG {
 
             Vector3 vel = GetVelocityToHitTargetByTime(transform.position, grabberPosition, Physics.gravity * 1.1f, timeToGrab);
 
-            rigid.velocity = vel;
+            rigid.linearVelocity = vel;
             // rigid.AddForce(vel, ForceMode.VelocityChange);
 
             // No longer initiated flick
@@ -1069,12 +1069,12 @@ namespace BNG {
                 Vector3 positionDelta = destination - transform.position;
 
                 // Move towards hand using velocity
-                rigid.velocity = Vector3.MoveTowards(rigid.velocity, (positionDelta * MoveVelocityForce) * Time.fixedDeltaTime, 1f);
+                rigid.linearVelocity = Vector3.MoveTowards(rigid.linearVelocity, (positionDelta * MoveVelocityForce) * Time.fixedDeltaTime, 1f);
             }
             else {
                 // Very close - just move object right where it needs to be and set velocity to 0 so it doesn't overshoot
                 rigid.MovePosition(destination);
-                rigid.velocity = Vector3.zero;
+                rigid.linearVelocity = Vector3.zero;
             }            
         }
 
@@ -1522,7 +1522,7 @@ namespace BNG {
 
                 // Stop our object on initial grab
                 if(rigid) {
-                    rigid.velocity = Vector3.zero;
+                    rigid.linearVelocity = Vector3.zero;
                     rigid.angularVelocity = Vector3.zero;
                 }
                 
@@ -1822,7 +1822,7 @@ namespace BNG {
                     // Apply velocity last
                     if (rigid && resetVelocity && droppedBy && AddControllerVelocityOnDrop&& GrabPhysics != GrabPhysics.None) {
                         // Make sure velocity is passed on
-                        Vector3 velocity = droppedBy.GetGrabberAveragedVelocity() + droppedBy.GetComponent<Rigidbody>().velocity;
+                        Vector3 velocity = droppedBy.GetGrabberAveragedVelocity() + droppedBy.GetComponent<Rigidbody>().linearVelocity;
                         Vector3 angularVelocity = droppedBy.GetGrabberAveragedAngularVelocity() + droppedBy.GetComponent<Rigidbody>().angularVelocity;
 
                         if (gameObject.activeSelf) {
@@ -2064,7 +2064,7 @@ namespace BNG {
                 return;
             }
 
-            rigid.velocity = releaseVelocity;
+            rigid.linearVelocity = releaseVelocity;
             rigid.angularVelocity = angularVelocity;
         }
 

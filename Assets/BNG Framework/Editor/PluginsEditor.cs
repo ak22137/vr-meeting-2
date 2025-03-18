@@ -165,7 +165,7 @@ public class PluginsEditor : EditorWindow {
         EditorGUILayout.Separator();
 
         // Warning about not having Render Pipeline set
-        if ((UsingURP || UsingHDRP) && UnityEngine.Rendering.GraphicsSettings.renderPipelineAsset == null) {
+        if ((UsingURP || UsingHDRP) && UnityEngine.Rendering.GraphicsSettings.defaultRenderPipeline == null) {
             GUILayout.Label("Additional Info : ", EditorStyles.boldLabel);
 
             EditorGUILayout.HelpBox("WARNING! No Render Pipeline has been set, but you have a Render Pipeline plugin installed. Go to Project Settings -> Graphics and verify your settings.", MessageType.Warning);

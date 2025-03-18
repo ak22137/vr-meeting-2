@@ -246,7 +246,7 @@ namespace BNG {
             }
 
             if(movementVelocity.magnitude > 0) {
-                playerRigid.velocity = Vector3.MoveTowards(playerRigid.velocity, (-movementVelocity * 2000f) * Time.fixedDeltaTime, 1f);
+                playerRigid.linearVelocity = Vector3.MoveTowards(playerRigid.linearVelocity, (-movementVelocity * 2000f) * Time.fixedDeltaTime, 1f);
             }
         }
 

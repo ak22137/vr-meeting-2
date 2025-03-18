@@ -46,11 +46,11 @@ namespace BNG {
             bool beingHeld = grab != null && grab.BeingHeld;
 
             // Align arrow with velocity
-            if (!beingHeld && rb != null && rb.velocity != Vector3.zero && Flying && ZVel > 0.02) {
-                rb.rotation = Quaternion.LookRotation(rb.velocity);
+            if (!beingHeld && rb != null && rb.linearVelocity != Vector3.zero && Flying && ZVel > 0.02) {
+                rb.rotation = Quaternion.LookRotation(rb.linearVelocity);
             }
 
-            ZVel = transform.InverseTransformDirection(rb.velocity).z;
+            ZVel = transform.InverseTransformDirection(rb.linearVelocity).z;
 
             if (Flying) {
                 flightTime += Time.fixedDeltaTime;
@@ -132,7 +132,7 @@ namespace BNG {
             }
 
             // Damage if possible
-            float zVel = System.Math.Abs(transform.InverseTransformDirection(rb.velocity).z);
+            float zVel = System.Math.Abs(transform.InverseTransformDirection(rb.linearVelocity).z);
             bool doStick = true;
             if (zVel > 0.02f && !rb.isKinematic) {
                 

@@ -35,7 +35,7 @@ namespace BNG {
         public RemoteGrabber DisableRemoteGrabber;
 
         [Tooltip("Assign Hand Colliders this material if provided")]
-        public PhysicMaterial ColliderMaterial;
+        public PhysicsMaterial ColliderMaterial;
 
         public Transform HandModel;
         public Transform HandModelOffset;
@@ -143,7 +143,7 @@ namespace BNG {
             else {
                 // Move using Velocity
                 Vector3 positionDelta = AttachTo.position - transform.position;
-                rigid.velocity = Vector3.MoveTowards(rigid.velocity, (positionDelta * HandVelocity) * Time.fixedDeltaTime, 5f);
+                rigid.linearVelocity = Vector3.MoveTowards(rigid.linearVelocity, (positionDelta * HandVelocity) * Time.fixedDeltaTime, 5f);
 
                 // Rotate using angular velocity
                 float angle;
