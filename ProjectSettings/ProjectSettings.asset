@@ -4,7 +4,7 @@
 PlayerSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 28
-  productGUID: 00000000000000000000000000000000
+  productGUID: f13008e077bf2ab4782ea4b5dddd8ad5
   AndroidProfiler: 0
   AndroidFilterTouchesWhenObscured: 0
   AndroidEnableSustainedPerformanceMode: 0
@@ -930,7 +930,7 @@ PlayerSettings:
   cloudProjectId: d652b74a-dcc6-40d2-ac91-766a5c8546ff
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: 
+  projectName: vr meeting 2
   organizationId: akshat_222
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 1
