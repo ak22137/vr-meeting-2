@@ -3,26 +3,66 @@ using UnityEngine;
 
 public class CustomNetworkManager : MonoBehaviour
 {
-    [SerializeField] private GameObject[] playerPrefabs;
-    public NetworkManager NetworkManager;
-    private void Awake()
+    [SerializeField] private PlayerAvatarManager avatarManager;
+    
+    private void Start()
     {
-        // Initialize with default player prefab if none is set
-        if (NetworkManager.Singleton.NetworkConfig.PlayerPrefab == null && playerPrefabs.Length > 0)
+        // Add event listener for server started
+        NetworkManager.Singleton.OnServerStarted += OnServerStarted;
+        
+        // Add event listener for client connected
+        NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
+    }
+    
+    private void OnDestroy()
+    {
+        // Remove event listeners when destroyed
+        if (NetworkManager.Singleton != null)
         {
-            NetworkManager.Singleton.NetworkConfig.PlayerPrefab = playerPrefabs[0];
+            NetworkManager.Singleton.OnServerStarted -= OnServerStarted;
+            NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
+        }
+    }
+    
+    private void OnServerStarted()
+    {
+        Debug.Log("Server started");
+    }
+    
+    private void OnClientConnected(ulong clientId)
+    {
+        Debug.Log($"Client connected: {clientId}");
+        
+        // If we're the server, spawn the correct player prefab for this client
+        if (NetworkManager.Singleton.IsServer)
+        {
+            // Get the selected avatar for this client
+            int avatarIndex = PlayerPrefs.GetInt("SelectedAvatarIndex", 0);
+            if (clientId != NetworkManager.Singleton.LocalClientId)
+            {
+                // For remote clients, we need to get their selection from network message
+                // This will be implemented in PlayerAvatarManager
+                avatarIndex = avatarManager.GetAvatarIndexForClient(clientId);
+            }
+            
+            // Get the prefab and spawn it
+            GameObject playerPrefab = avatarManager.GetAvatarPrefabByIndex(avatarIndex);
+            Vector3 spawnPos = new Vector3(0, 1, 0); // Default spawn position
+            GameObject playerInstance = Instantiate(playerPrefab, spawnPos, Quaternion.identity);
+            
+            // Get the NetworkObject and spawn it
+            NetworkObject networkObject = playerInstance.GetComponent<NetworkObject>();
+            networkObject.SpawnAsPlayerObject(clientId);
         }
     }
     
     public void StartHost()
     {
-        // PlayerPrefab should already be set by AvatarSelector
         NetworkManager.Singleton.StartHost();
     }
     
     public void StartClient()
     {
-        // PlayerPrefab should already be set by AvatarSelector
         NetworkManager.Singleton.StartClient();
     }
     

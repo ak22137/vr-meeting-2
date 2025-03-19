@@ -1,11 +1,17 @@
 using Unity.Netcode;
 using UnityEngine;
 using System.Collections.Generic;
+using TMPro;
+using Unity.Collections;
 
 namespace BNG
 {
     public class ActivateIfPlayer : NetworkBehaviour
     {
+        [Header("Player Identification")]
+        public TextMeshProUGUI PlayerNameText;  // Reference to the name text field
+        private NetworkVariable<FixedString32Bytes> netPlayerName = new(writePerm: NetworkVariableWritePermission.Owner);
+
         [Header("Local Player Transforms")]
         public Transform PlayerHeadTransform;
         public Transform PlayerLeftHandTransform;
@@ -74,6 +80,7 @@ namespace BNG
 
             InitializeLocalPlayer();
             enabled = true;
+            SetupPlayerName();
         }
 
         private void InitializeLocalPlayer()
@@ -86,7 +93,26 @@ namespace BNG
 
             AssignPlayerObjects();
         }
+        private void SetupPlayerName()
+        {
+            if (IsOwner)
+            {
+                // Find the PlayerNameManager component on the PlayerController
+                PlayerNameManager nameManager = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerNameManager>();
+                if (nameManager != null)
+                {
+                    string playerName = nameManager.GetPlayerName();
+                    // Set the networked variable
+                    netPlayerName.Value = new FixedString32Bytes(playerName);
 
+                    // Update UI if we have a reference
+                    if (PlayerNameText != null)
+                    {
+                        PlayerNameText.text = playerName;
+                    }
+                }
+            }
+        }
         private void Update()
         {
             if (IsOwner)
@@ -96,6 +122,10 @@ namespace BNG
                 UpdateHandControllerValues(true);
                 UpdateHandControllerValues(false);
                 UpdateRemoteAnimations();
+                if (PlayerNameText != null)
+                {
+                    PlayerNameText.text = netPlayerName.Value.ToString();
+                }
             }
             else
             {
