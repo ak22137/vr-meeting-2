@@ -1,37 +1,33 @@
 using Unity.Netcode;
 using UnityEngine;
 
-public class CustomNetworkManager : NetworkBehaviour
+public class CustomNetworkManager : MonoBehaviour
 {
     [SerializeField] private GameObject[] playerPrefabs;
-
+    public NetworkManager NetworkManager;
+    private void Awake()
+    {
+        // Initialize with default player prefab if none is set
+        if (NetworkManager.Singleton.NetworkConfig.PlayerPrefab == null && playerPrefabs.Length > 0)
+        {
+            NetworkManager.Singleton.NetworkConfig.PlayerPrefab = playerPrefabs[0];
+        }
+    }
+    
     public void StartHost()
     {
-        // Get the selected avatar index from PlayerPrefs
-        int selectedAvatarIndex = PlayerPrefs.GetInt("SelectedAvatarIndex", 0);
-
-        // Set the player prefab before starting the host
-        NetworkManager.Singleton.NetworkConfig.PlayerPrefab = playerPrefabs[selectedAvatarIndex];
-
-        // Start host
+        // PlayerPrefab should already be set by AvatarSelector
         NetworkManager.Singleton.StartHost();
     }
-
+    
     public void StartClient()
     {
-        // Get the selected avatar index from PlayerPrefs
-        int selectedAvatarIndex = PlayerPrefs.GetInt("SelectedAvatarIndex", 0);
-
-        // Set the player prefab before starting the client
-        NetworkManager.Singleton.NetworkConfig.PlayerPrefab = playerPrefabs[selectedAvatarIndex];
-
-        // Start client
+        // PlayerPrefab should already be set by AvatarSelector
         NetworkManager.Singleton.StartClient();
     }
-
+    
     public void StartServer()
     {
-        // For a dedicated server, you might not need to set the player prefab
         NetworkManager.Singleton.StartServer();
     }
 }

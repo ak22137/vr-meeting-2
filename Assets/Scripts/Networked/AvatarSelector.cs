@@ -12,42 +12,38 @@ public class AvatarSelector : MonoBehaviour
     
     [Header("UI References")]
     [SerializeField] private GameObject avatarSelectionPanel;
+    [SerializeField] private Button confirmButton;
     
-    private int selectedAvatarIndex;
-    private NetworkManager networkManager;
+    private int selectedAvatarIndex = -1;
     
     private void Start()
     {
-        networkManager = NetworkManager.Singleton;
-        
-        if (networkManager == null)
-        {
-            Debug.LogError("Network Manager not found!");
-            return;
-        }
-        
-        // Set default avatar
-        selectedAvatarIndex = defaultAvatarIndex;
-        
         // Set up avatar buttons
         for (int i = 0; i < avatarButtons.Length; i++)
         {
             int index = i; // Capture the index for the lambda
-            avatarButtons[i].onClick.AddListener(() => SelectAvatar(index));
+            avatarButtons[i].onClick.AddListener(() => HighlightAvatar(index));
         }
         
-        // Load previously selected avatar if it exists
+        // Disable confirm button until avatar is selected
+        if (confirmButton != null)
+        {
+            confirmButton.interactable = false;
+            confirmButton.onClick.AddListener(ConfirmAvatarSelection);
+        }
+        
+        // Just highlight the default avatar visually without selecting it
         if (PlayerPrefs.HasKey("SelectedAvatarIndex"))
         {
             int savedIndex = PlayerPrefs.GetInt("SelectedAvatarIndex", defaultAvatarIndex);
             if (savedIndex >= 0 && savedIndex < avatarPrefabs.Length)
             {
-                SelectAvatar(savedIndex);
+                HighlightAvatar(savedIndex);
             }
         }
     }
     
-    public void SelectAvatar(int index)
+    public void HighlightAvatar(int index)
     {
         if (index < 0 || index >= avatarPrefabs.Length)
         {
@@ -57,47 +53,45 @@ public class AvatarSelector : MonoBehaviour
         
         selectedAvatarIndex = index;
         
-        // For Netcode for GameObjects, we modify the NetworkPrefab instead of playerPrefab
-        SetNetworkPrefab(avatarPrefabs[selectedAvatarIndex]);
-        
         // Visual feedback for selection
-        HighlightSelectedButton(index);
-        
-        PlayerPrefs.SetInt("SelectedAvatarIndex", selectedAvatarIndex);
-        PlayerPrefs.Save();
-    }
-    
-    private void SetNetworkPrefab(GameObject prefab)
-    {
-        // In Netcode for GameObjects, we typically use NetworkPrefab list
-        // This is a more complex approach since we need to modify the NetworkConfig
-        
-        // Use NetworkPrefabHandler to override the player prefab
-        // This is one approach - might need to be adjusted based on your specific setup
-        NetworkConfig config = networkManager.NetworkConfig;
-        
-        // Store the prefab reference for later use when joining/hosting
-        PlayerPrefs.SetString("SelectedAvatarPrefabPath", prefab.name);
-        PlayerPrefs.Save();
-        
-        // Note: You'll need to have your NetworkManager handle this prefab selection
-        // when starting the connection
-    }
-    
-    private void HighlightSelectedButton(int index)
-    {
-        // Reset all buttons
-        foreach (Button button in avatarButtons)
-        {
-            button.GetComponent<Image>().color = Color.white;
-        }
+        // foreach (Button button in avatarButtons)
+        // {
+        //     button.GetComponent<Image>().color = Color.white;
+        // }
         
         // Highlight selected button
-        avatarButtons[index].GetComponent<Image>().color = Color.green;
+        // avatarButtons[index].GetComponent<Image>().color = Color.grey;
+        
+        // Enable confirm button now that an avatar is selected
+        if (confirmButton != null)
+        {
+            confirmButton.interactable = true;
+        }
+    }
+    
+    public void ConfirmAvatarSelection()
+    {
+        if (selectedAvatarIndex < 0 || selectedAvatarIndex >= avatarPrefabs.Length)
+        {
+            Debug.LogError("No valid avatar selected!");
+            return;
+        }
+        
+        // Set the player prefab in the NetworkManager only when confirmed
+        NetworkManager.Singleton.NetworkConfig.PlayerPrefab = avatarPrefabs[selectedAvatarIndex];
+        
+        // Save the selection
+        PlayerPrefs.SetInt("SelectedAvatarIndex", selectedAvatarIndex);
+        PlayerPrefs.Save();
+        
+        Debug.Log($"Avatar confirmed: {avatarPrefabs[selectedAvatarIndex].name}");
+        
+        // Hide avatar selection panel
+        HideAvatarSelection();
     }
     
     public void HideAvatarSelection()
     {
-        avatarSelectionPanel.SetActive(false);
+        // avatarSelectionPanel.SetActive(false);
     }
 }
