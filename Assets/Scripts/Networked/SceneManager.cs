@@ -6,9 +6,11 @@ using Unity.Services.Relay;
 using Unity.Services.Relay.Models;
 using UnityEngine;
 using UnityEngine.UI;
-
+using Unity.Services.Vivox;
 public class RoomJoinOrCreate : NetworkBehaviour
 {
+
+    private VivoxChannelManager vivoxChannelManager;
     public Button joinOrCreateButton;
     public string targetSceneName = "YourTargetScene";
     private const string LOBBY_CODE_KEY = "LobbyCode";
@@ -17,11 +19,17 @@ public class RoomJoinOrCreate : NetworkBehaviour
     {
         // Initialize Unity Gaming Services
         await Unity.Services.Core.UnityServices.InitializeAsync();
-        
+
         // Sign in anonymously
         await Unity.Services.Authentication.AuthenticationService.Instance.SignInAnonymouslyAsync();
-        
+        if (vivoxChannelManager == null)
+        {
+            vivoxChannelManager = gameObject.AddComponent<VivoxChannelManager>();
+        }
         joinOrCreateButton.onClick.AddListener(JoinOrCreateRoom);
+
+        // vivoxVoiceManager = VivoxVoiceManager.Instance;
+        // vivoxVoiceManager.Initialize();
     }
 
     private async void JoinOrCreateRoom()
@@ -72,6 +80,8 @@ public class RoomJoinOrCreate : NetworkBehaviour
             var lobby = await LobbyService.Instance.CreateLobbyAsync("MyLobby", 4, options);
             Debug.Log($"Lobby created with ID: {lobby.Id}");
 
+            vivoxChannelManager.SetupForLobby(lobby.Id);
+
             // Set up the Relay transport for the host
             UnityTransport transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
             transport.SetHostRelayData(
@@ -84,7 +94,7 @@ public class RoomJoinOrCreate : NetworkBehaviour
 
             // Start the host
             NetworkManager.Singleton.StartHost();
-            
+
             // Load the scene from the host
             NetworkManager.Singleton.SceneManager.LoadScene(targetSceneName, UnityEngine.SceneManagement.LoadSceneMode.Single);
         }
@@ -98,6 +108,7 @@ public class RoomJoinOrCreate : NetworkBehaviour
     {
         try
         {
+              vivoxChannelManager.SetupForLobby(lobbyId);
             // Join the Relay using the join code
             JoinAllocation allocation = await RelayService.Instance.JoinAllocationAsync(relayJoinCode);
 
@@ -114,7 +125,7 @@ public class RoomJoinOrCreate : NetworkBehaviour
 
             // Start the client - the host will handle scene loading
             NetworkManager.Singleton.StartClient();
-            
+
             // Note: Scene loading will be handled by the host via NetworkSceneManager
             // Clients don't need to load scenes manually
         }
