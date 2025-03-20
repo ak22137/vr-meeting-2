@@ -7,6 +7,7 @@ using Unity.Services.Relay.Models;
 using UnityEngine;
 using UnityEngine.UI;
 using Unity.Services.Vivox;
+using System.Collections.Generic;
 public class RoomJoinOrCreate : NetworkBehaviour
 {
 
@@ -32,24 +33,75 @@ public class RoomJoinOrCreate : NetworkBehaviour
         // vivoxVoiceManager.Initialize();
     }
 
+    // public async void JoinOrCreateRoom()
+    // {
+    //     Debug.Log("Starting Creating or joining room");
+    //     try
+    //     {
+    //         // Check if a lobby exists by querying for lobbies
+    //         var lobbies = await LobbyService.Instance.QueryLobbiesAsync();
+    //         if (lobbies.Results.Count > 0)
+    //         {
+    //             // Join the first available lobby
+    //             var lobby = lobbies.Results[0];
+    //             Debug.Log("Joining existing lobby...");
+    //             await JoinLobby(lobby.Id, lobby.Data[LOBBY_CODE_KEY].Value);
+    //         }
+    //         else
+    //         {
+    //             // No lobby exists, so create a new one
+    //             Debug.Log("Creating new lobby...");
+    //             await CreateLobby();
+    //         }
+    //     }
+    //     catch (System.Exception e)
+    //     {
+    //         Debug.LogError($"Failed to join or create lobby: {e.Message}");
+    //     }
+    // }
+
     public async void JoinOrCreateRoom()
     {
         Debug.Log("Starting Creating or joining room");
         try
         {
-            // Check if a lobby exists by querying for lobbies
-            var lobbies = await LobbyService.Instance.QueryLobbiesAsync();
+            // Create a proper query with options to find all public lobbies
+            QueryLobbiesOptions queryOptions = new QueryLobbiesOptions
+            {
+                Count = 25, // Increase the number of results returned
+                Filters = new List<QueryFilter>()
+                // You can add filters if needed, but for now we'll search for all lobbies
+            };
+
+            var lobbies = await LobbyService.Instance.QueryLobbiesAsync(queryOptions);
+            
+            Debug.Log($"Found {lobbies.Results.Count} lobbies");
+            foreach (var lobby in lobbies.Results)
+            {
+                Debug.Log($"Found lobby: {lobby.Id} with {lobby.Players.Count} players");
+            }
+
             if (lobbies.Results.Count > 0)
             {
                 // Join the first available lobby
                 var lobby = lobbies.Results[0];
-                Debug.Log("Joining existing lobby...");
-                await JoinLobby(lobby.Id, lobby.Data[LOBBY_CODE_KEY].Value);
+                Debug.Log($"Joining existing lobby with ID: {lobby.Id}");
+
+                // Check if the lobby has the required data
+                if (lobby.Data != null && lobby.Data.ContainsKey(LOBBY_CODE_KEY))
+                {
+                    await JoinLobby(lobby.Id, lobby.Data[LOBBY_CODE_KEY].Value);
+                }
+                else
+                {
+                    Debug.LogError("Lobby found but missing relay code data");
+                    await CreateLobby(); // Create a new lobby as fallback
+                }
             }
             else
             {
                 // No lobby exists, so create a new one
-                Debug.Log("Creating new lobby...");
+                Debug.Log("No lobbies found. Creating new lobby...");
                 await CreateLobby();
             }
         }
