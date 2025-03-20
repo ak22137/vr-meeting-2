@@ -5,7 +5,7 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/BNG Framework/Scenes/XR Demo.unity
     guid: a1360534006d3f845bc79b46b93cfec5
   - enabled: 0
@@ -26,6 +26,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/1.unity
     guid: edd99d57acbefa5438eae8a98ff6acc9
+  - enabled: 1
+    path: Assets/Scenes/Meeting.unity
+    guid: 7f27107e7d62c8a44b051157b4575118
   m_configObjects:
     Unity.XR.Oculus.Settings: {fileID: 11400000, guid: 6e0f1a5db6eb5984380e82a4f7711911,
       type: 2}

@@ -32,8 +32,9 @@ public class RoomJoinOrCreate : NetworkBehaviour
         // vivoxVoiceManager.Initialize();
     }
 
-    private async void JoinOrCreateRoom()
+    public async void JoinOrCreateRoom()
     {
+        Debug.Log("Starting Creating or joining room");
         try
         {
             // Check if a lobby exists by querying for lobbies
@@ -108,7 +109,7 @@ public class RoomJoinOrCreate : NetworkBehaviour
     {
         try
         {
-              vivoxChannelManager.SetupForLobby(lobbyId);
+            vivoxChannelManager.SetupForLobby(lobbyId);
             // Join the Relay using the join code
             JoinAllocation allocation = await RelayService.Instance.JoinAllocationAsync(relayJoinCode);
 
