@@ -84,18 +84,18 @@ namespace BNG {
         }
 
 #if XRIT_INTEGRATION
-        XRRayInteractor xrRay;
-        XRInteractorLineVisual vis;
+        UnityEngine.XR.Interaction.Toolkit.Interactors.XRRayInteractor xrRay;
+        UnityEngine.XR.Interaction.Toolkit.Interactors.Visuals.XRInteractorLineVisual vis;
 
 public virtual void SetupXRITRaycaster() {
     // Check if user has already added any components
-    xrRay = gameObject.GetComponent<XRRayInteractor>();
-    vis = gameObject.GetComponent<XRInteractorLineVisual>();
+    xrRay = gameObject.GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactors.XRRayInteractor>();
+    vis = gameObject.GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactors.Visuals.XRInteractorLineVisual>();
     Gradient curColor = null;
 
     if(xrRay == null) {
 
-        xrRay = gameObject.AddComponent<XRRayInteractor>();
+        xrRay = gameObject.AddComponent<UnityEngine.XR.Interaction.Toolkit.Interactors.XRRayInteractor>();
         ActionBasedController abc = gameObject.AddComponent<ActionBasedController>();
 
         // Setup default ui input action
@@ -115,7 +115,7 @@ public virtual void SetupXRITRaycaster() {
 
     if(vis == null) {
         // Setup XRay Visual
-        vis = gameObject.AddComponent<XRInteractorLineVisual>();
+        vis = gameObject.AddComponent<UnityEngine.XR.Interaction.Toolkit.Interactors.Visuals.XRInteractorLineVisual>();
         vis.lineWidth = 0.01f;
 
         // Setup the color
@@ -161,7 +161,7 @@ public virtual void SetupXRITRaycaster() {
                 int hitIndex = -1;
                 bool hitIsUI = false;
                 if (xrRay.TryGetCurrentRaycast(out hit, out hitIndex, out hitResult, out hitIndex, out hitIsUI)) {
-                    if((hitResult.HasValue && hitResult.Value.isValid) || (hit.HasValue && hit.Value.collider.gameObject.GetComponent<XRBaseInteractable>() != null)) {
+                    if((hitResult.HasValue && hitResult.Value.isValid) || (hit.HasValue && hit.Value.collider.gameObject.GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRBaseInteractable>() != null)) {
                         vis.enabled = true;
                     }
                     else {
