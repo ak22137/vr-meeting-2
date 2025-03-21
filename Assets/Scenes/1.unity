@@ -5577,11 +5577,11 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8647664954492677990, guid: 0267a1d338db2bf4c9625e450bbaaad0,
         type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1941182847}
+      addedObject: {fileID: 1941182846}
     - targetCorrespondingSourceObject: {fileID: 8647664954492677990, guid: 0267a1d338db2bf4c9625e450bbaaad0,
         type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1941182846}
+      addedObject: {fileID: 1941182847}
   m_SourcePrefab: {fileID: 100100000, guid: 0267a1d338db2bf4c9625e450bbaaad0, type: 3}
 --- !u!1 &910581469
 GameObject:
@@ -9857,8 +9857,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b9cf313fde375f42be3f6538880f7f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  joinOrCreateButton: {fileID: 0}
-  targetSceneName: YourTargetScene
+  joinOrCreateButton: {fileID: 910581471}
+  targetSceneName: Meeting
 --- !u!1001 &1960925986
 PrefabInstance:
   m_ObjectHideFlags: 0
