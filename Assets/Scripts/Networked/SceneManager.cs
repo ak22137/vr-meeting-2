@@ -74,7 +74,7 @@ public class RoomJoinOrCreate : NetworkBehaviour
             };
 
             var lobbies = await LobbyService.Instance.QueryLobbiesAsync(queryOptions);
-            
+
             Debug.Log($"Found {lobbies.Results.Count} lobbies");
             foreach (var lobby in lobbies.Results)
             {
@@ -176,11 +176,16 @@ public class RoomJoinOrCreate : NetworkBehaviour
                 allocation.HostConnectionData
             );
 
+            // Get player name 
+            string playerName = "Player_" + System.Guid.NewGuid().ToString().Substring(0, 5);
+
+            //  login to Vivox and join the channel
+            vivoxChannelManager.LoginAndJoinChannel(playerName);
+
+
             // Start the client - the host will handle scene loading
             NetworkManager.Singleton.StartClient();
 
-            // Note: Scene loading will be handled by the host via NetworkSceneManager
-            // Clients don't need to load scenes manually
         }
         catch (System.Exception e)
         {
