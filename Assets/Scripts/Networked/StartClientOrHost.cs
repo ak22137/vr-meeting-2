@@ -9,12 +9,12 @@ public class NetworkManagerUI : MonoBehaviour
 
    private void Start()
    {
-    //    // Add button listeners if buttons are assigned
-    //    if (hostButton != null)
-    //        hostButton.onClick.AddListener(StartHost);
+       // Add button listeners if buttons are assigned
+       if (hostButton != null)
+           hostButton.onClick.AddListener(StartHost);
            
-    //    if (clientButton != null)
-    //        clientButton.onClick.AddListener(StartClient);
+       if (clientButton != null)
+           clientButton.onClick.AddListener(StartClient);
    }
 
    public void StartHost()
